@@ -9,10 +9,10 @@
 usuario: omnileads
 usuario_pass: 098098ZZZ
 ssh_port: 22
-OML_IP: 192.168.95.55
+OML_IP: 192.168.95.44
 OML_HOST_IP: 192.168.95.104
 
-
+oml_prefix: /home/fabuntu/OML/
 install_prefix: /opt/omnileads/
 asterisk_location: /opt/omnileads/asterisk/
 

@@ -120,12 +120,12 @@
   tags: postinstall
 
 # Untareo los sonidos de agentes, que vienen desde el repo
-#- name: Untar the sounds for OML agents
-#  unarchive: "src={{ install_prefix }}/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item.dest }} remote_src=yes"
-#  with_items:
-#    - { source: "es-oml.tgz", dest: "es" }
-#    - { source: "en-oml.tgz", dest: "en" }
-#  tags: postinstall
+- name: Untar the sounds for OML agents
+  unarchive: "src={{ oml_prefix }}/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item.dest }} remote_src=yes"
+  with_items:
+    - { source: "es-oml.tgz", dest: "es" }
+    - { source: "en-oml.tgz", dest: "en" }
+  tags: postinstall
 
 # Permiso de usuario a la carpeta de asterisk -- FIX ME -- usar file
 - name: Set up permissions of asterisk
