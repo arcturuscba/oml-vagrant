@@ -16,6 +16,33 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
+
+# se crea el grupo, usuarios y se añade a sudoers al usuario omnileads
+- name: Creation of {{ usuario }} group
+  group: name={{ usuario }} state=present
+  become: true
+  become_method: sudo
+  tags: yum
+
+- name: Create of {{ usuario }} login user
+  user:
+    name: '{{ usuario }}'
+    password: '{{ usuario_pass }}'
+    groups: '{{ usuario }}'
+    state: present
+    shell: /bin/bash
+    system: no
+    createhome: yes
+    home: /opt/{{ usuario }}
+
+- name: Ensure the omnileads user is sudoer with no password required
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%wheel\s'
+    line: 'omnileads ALL=(ALL) NOPASSWD: ALL'
+
+
 # se deshabilita selinux https://docs.ansible.com/ansible/2.5/modules/command_module.html
 - name: Disable Selinux
   command: "{{ item }}"

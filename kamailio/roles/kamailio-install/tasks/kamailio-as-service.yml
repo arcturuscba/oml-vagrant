@@ -38,10 +38,12 @@
 
 # Se copia el archivo kamctlrc a /opt/omnileads/kamailio/etc/kamailio -- FIX ME -- usar modulo copy
 # Ver archivo kamctlrc para mas info
-- name: Copy of oml/kamailio-files to the desired destinations
-  shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip"
-  with_items:
-      - cp kamailio-files/kamctlrc {{ kamailio_location }}/etc/kamailio/
+#- name: Copy of oml/kamailio-files to the desired destinations
+#  shell: "cp {{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamctlrc {{ kamailio_location }}/etc/kamailio/"
+
+# Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
+- name: Creation of kamailio file in /etc/default
+  template: src=templates/kamctlrc dest={{ kamailio_location }}/etc/kamailio/ owner=root group=root mode=755
 
 # Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
 - name: Creation of kamailio file in /etc/default
@@ -100,11 +102,11 @@
   file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true
 
 # Se carga un tamplate de reglas de iptables para omnileads, No se ha testeado -- FIX ME -- revisarlo y testearlo
-- name: Template of omnileads-iptables
-  template: src=templates/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755
+#- name: Template of omnileads-iptables
+#  template: src=templates/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755
 
-- name: Restart kamailio service
-  service: name=kamailio state=restarted enabled=yes
-  tags: ['never','postinstall']
-  become: true
-  become_method: sudo
+#- name: Restart kamailio service
+#  service: name=kamailio state=restarted enabled=yes
+#  tags: ['never','postinstall']
+#  become: true
+#  become_method: sudo

@@ -64,6 +64,7 @@ country_code: 54
 mysql_root_pass: admin123
 
 
-install_prefix: /home/fabuntu/OML/
-kamailio_location: /opt/omnileads/kamailio/
+install_prefix: ~/OML/
+kamailio_location: /opt/omnileads/kamailio
 usuario: omnileads
+usuario_pass: 098098ZZZ

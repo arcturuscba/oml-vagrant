@@ -12,8 +12,8 @@ ssh_port: 22
 OML_IP: 192.168.43.44
 OML_HOST_IP: 192.168.95.104
 
-oml_prefix: /home/fabuntu/OML/
-install_prefix: /opt/omnileads/
+oml_prefix: ~/OML/
+install_prefix: ~/OML/
 asterisk_location: /opt/omnileads/asterisk/
 
 ############ Componentes del certificado del CA ###########
