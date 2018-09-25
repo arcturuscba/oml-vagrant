@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
 	config.vm.define "oml-asterisk" do |app|
 	app.vm.box = "centos-VAGRANTSLASH-7"
 	app.vm.hostname = "oml-asterisk.example.com"
-	app.vm.network "public_network", ip: "192.168.95.44"
+	app.vm.network "public_network", ip: ASTERISK-IP
 	end
 
 	config.vm.provision :ansible do |ansible|

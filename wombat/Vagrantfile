@@ -1,12 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'oml-vagrant-dev-config.rb'
+include MyVars
+
 Vagrant.configure("2") do |config|
 
 	config.vm.define "oml-wombat" do |app|
 	app.vm.box = "centos-VAGRANTSLASH-7"
 	app.vm.hostname = "oml-wombat.example.com"
-	app.vm.network "public_network", ip: "192.168.95.45"
+	app.vm.network "public_network", ip: OMLWOMBAT-IP
 	end
 
 	config.vm.provision :ansible do |ansible|

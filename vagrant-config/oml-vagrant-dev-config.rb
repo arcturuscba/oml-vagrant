@@ -1,0 +1,9 @@
+module MyVars
+
+    WEBVMNAME = "rex"
+    ASTERISK-IP = "192.168.95.181"
+    KAMAILIO-IP = "192.168.95.182"
+    WOMBAT-IP = "192.168.95.183"
+    PSTN-IP = "192.168.95.184"
+
+end
