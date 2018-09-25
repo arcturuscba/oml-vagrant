@@ -1,1 +1,1 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/fabuntu/DevOps/oml-vagrant/kamailio","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/fabuntu/OML/oml-vagrant/kamailio","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
