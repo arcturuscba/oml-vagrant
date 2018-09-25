@@ -9,11 +9,11 @@
 usuario: omnileads
 usuario_pass: 098098ZZZ
 ssh_port: 22
-OML_IP: 192.168.43.44
-OML_HOST_IP: 192.168.95.104
+OML_IP: 192.168.200.201
+OML_HOST_IP: 192.168.200.1
 
 oml_prefix: ~/OML/
-install_prefix: ~/OML/
+install_prefix: /usr/src/
 asterisk_location: /opt/omnileads/asterisk/
 
 ############ Componentes del certificado del CA ###########

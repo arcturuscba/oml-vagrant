@@ -64,7 +64,8 @@ country_code: 54
 mysql_root_pass: admin123
 
 
-install_prefix: ~/OML/
+omni_ip: 192.168.200.1
+install_prefix: /usr/src/
 kamailio_location: /opt/omnileads/kamailio
 usuario: omnileads
 usuario_pass: 098098ZZZ
