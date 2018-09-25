@@ -62,3 +62,8 @@ country_code: 54
 
 #Contraseña de mysql en debian
 mysql_root_pass: admin123
+
+
+install_prefix: /home/fabuntu/OML/
+kamailio_location: /opt/omnileads/kamailio/
+usuario: omnileads

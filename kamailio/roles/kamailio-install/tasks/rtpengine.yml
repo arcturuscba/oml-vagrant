@@ -156,9 +156,6 @@
 
 ####### End of install in debian #######
 
-- name: Touch of changeip.sh
-  file: path={{ install_prefix }}bin/changeip.sh state=touch owner={{ usuario }}  group={{ usuario }} mode=755
-
 # Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
 - name: Creation of RTPengine config file
   template: src=templates/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
@@ -200,6 +197,6 @@
 
 # Inicio y habilito el servicio
 - name: Start and enable rtpengine service
-  service: name=rtpengine state=started enabled=yes
+  service: name=rtpengine.service state=started enabled=yes
   become: true
   become_method: sudo

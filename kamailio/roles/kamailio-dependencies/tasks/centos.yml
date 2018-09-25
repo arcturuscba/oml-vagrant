@@ -53,6 +53,26 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
+# Se excluye postgres de la lista de repositorios sng-base y sng-update (cuando usabamos sangomaOS)
+- name: Exclude postgres in list of repositories
+  ini_file: "path=/etc/yum.repos.d/Sangoma-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
+  with_items:
+      - sng-base
+      - sng-updates
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Sangoma"
+
+# Se excluye postgres de la lista de repositorios base y updates
+- name: Exclude postgres in list of repositories
+  ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
+  with_items:
+      - base
+      - updates
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
 # Se para y deshabilita firewalld
 # https://docs.ansible.com/ansible/2.5/modules/shell_module.html#shell-module
 - name: Stop firewalld
@@ -125,6 +145,30 @@
       #- librabbitmq*
       - pcre-devel
       - libpcap-devel
+      - libevent-devel
+      - gcc
+      - gcc-c++
+      - bison
+      - bison-devel
+      - flex
+      - expat
+      - expat-devel
+      - libuuid
+      - libuuid-devel
+      - xmlrpc-c-devel
+      - lynx
+      - pcre
+      - pcre-devel
+      - libtool-ltdl-devel
+      - iptables-devel
+      - iptables-services
+      - libpcap-devel
+      - glib2-devel
+      - json-glib-devel
+      - redis
+      - hiredis
+      - hiredis-devel
+      - libunistring-devel.x86_64
   become: true
   become_method: sudo
 
@@ -153,6 +197,20 @@
     - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
 
+
+# Se instala el repo de postgresql9.6
+- name: Install of postgresql 9.6
+  yum: "name={{ postgresql_url }} state=present validate_certs=no "
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+#Se instalan todos los paquetes de postgresql96
+- yum: name=postgresql96-devel state=present
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
 # reinicio de server
 - name: Reboot immediately if there was a change
   shell: "sleep 5 && reboot"
@@ -165,4 +223,4 @@
     sleep: 5
     delay: 10
     timeout: 300
-...    
+...

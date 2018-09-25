@@ -4,6 +4,6 @@
   sudo: yes
 
   roles:
-  - kamailio-dependencies
+  #- kamailio-dependencies
   - kamailio-install
 ...
