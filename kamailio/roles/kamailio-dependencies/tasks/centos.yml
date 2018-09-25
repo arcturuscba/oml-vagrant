@@ -67,7 +67,6 @@
   yum: name='*' state=latest update_cache=yes skip_broken=yes
   become: true
   become_method: sudo
-  when: LOCALHOST == "true"
 
 # Se instala las Development Tools
 - name: Install Development tools
@@ -153,3 +152,17 @@
     - "'ya está instalado' not in command_result.stderr"
     - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
+
+# reinicio de server
+- name: Reboot immediately if there was a change
+  shell: "sleep 5 && reboot"
+  async: 1
+  poll: 0
+
+- name: Wait for the reboot to complete if there was a change.
+  wait_for_connection:
+    connect_timeout: 40
+    sleep: 5
+    delay: 10
+    timeout: 300
+...    

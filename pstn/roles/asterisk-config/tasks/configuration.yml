@@ -1,0 +1,162 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+# Se crea el servicico de asterisk  para systemctl
+- name: Creation of asterisk.service
+  template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
+  tags: postinstall
+
+# Linkeo el binario a /usr/sbin
+- name: Create simbolic link of asterisk binarie
+  file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true
+  when: asterisk_location != ""
+  become: yes
+  become_method: sudo
+
+- name: Config of asterisk for OML
+  template: "src=templates/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
+  with_items:
+      - amd.conf
+      - chan_dahdi.conf
+      - extconfig.conf
+      - extensions.conf
+      - features.conf
+      - func_odbc.conf
+      - http.conf
+      - indications.conf
+      - logger.conf
+      - manager.conf
+      - modules.conf
+      - musiconhold.conf
+      - oml_func_odbc.conf
+      - oml_res_odbc.conf
+      - oml_amd.conf
+      - oml_manager.conf
+      - oml_dahdi.conf
+      - oml_http.conf
+      - oml_sip_general.conf
+      - oml_sip_nat.conf
+      - queues.conf
+      - res_odbc.conf
+      - sip.conf
+      - udptl.conf
+  become: true
+  become_method: sudo
+  when: asterisk_location != ""
+  tags: postinstall
+
+# Los archivos-no-enlaces se copian a la a /etc/asterisk
+- name: Copy of all asterisk config files
+  copy: "src=templates/conf/archivos-no-enlaces/ dest={{ asterisk_location }}/etc/asterisk/ owner={{ usuario }} group={{ usuario }} mode=755"
+  when: asterisk_location != ""
+  tags: test
+
+# Se copian los agis a /var/lib/asterisk/agi-bin
+#- name: Copy of the php agis
+#  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner={{ usuario }} group={{ usuario }}"
+#  with_items:
+#      - omni-asterisk-logout.php
+#      - omni-blacklist.php
+#      - omni-dialednum.php
+#      - omni-grabaciones.php
+#      - phpagi-asmanager.php
+#      - phpagi.php
+#  become: yes
+#  become_method: sudo
+#  tags: postinstall
+
+# Estos dos agis los creo desde ansible
+#- name: Creation of the agis omni-blackist and omni-dialednum
+#  template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 owner={{ usuario }} group={{ usuario }}"
+#  with_items:
+#      - omni-blacklist.php
+#      - omni-dialednum.php
+#  become: yes
+#  become_method: sudo
+#  tags: postinstall
+
+# Aca creo la carpeta parselog
+- name: Create /usr/local/parselog
+  file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
+  become: yes
+  become_method: sudo
+  tags: postinstall
+
+# Creo el script de conversion lo deje en parselog por convencion heredada de asternic -- FIX ME -- mejorar el script de conversion se puede hacer mejor
+- name: Link the conversor.sh file
+  template: src=templates/conversor.sh dest=/usr/local/parselog/conversor.sh owner={{ usuario }} group={{ usuario }} mode=755
+  when: asterisk_location != ""
+  tags: postinstall
+
+# Se añade el cron de omnileads
+- name: Copy the cron-omnileads file
+  template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
+  when: asterisk_location != ""
+  tags: postinstall
+
+# Creo los directorios que tendran los sonidos de agentes
+- name: Make of the sounds dirs
+  file: state=directory path={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755
+  with_items:
+    - es
+    - en
+    - oml
+  tags: postinstall
+
+# Untareo los sonidos de agentes, que vienen desde el repo
+- name: Untar the sounds for OML agents
+  unarchive: "src={{ oml_prefix }}/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item.dest }} remote_src=yes"
+  with_items:
+    - { source: "es-oml.tgz", dest: "es" }
+    - { source: "en-oml.tgz", dest: "en" }
+  tags: postinstall
+
+# Permiso de usuario a la carpeta de asterisk -- FIX ME -- usar file
+- name: Set up permissions of asterisk
+  shell: "{{ item }}"
+  with_items:
+          - "chown -R {{ usuario }}.{{ usuario }} {{ asterisk_location }}"
+  when: asterisk_location != ""
+  tags: postinstall
+  become: yes
+  become_method: sudo
+
+# Habilito e inicio asterisk
+- name: Start and enable asterisk
+  command: "{{ item }}"
+  with_items:
+          - "systemctl daemon-reload"
+          - "systemctl enable asterisk"
+          - "service asterisk stop"
+          - "service asterisk start"
+  become: true
+  become_method: sudo
+  ignore_errors: yes
+
+# Un reload de config no viene mal, no alarmarse si falla
+- name: Reload of asterisk config
+  shell: "asterisk -rx 'module reload'"
+  become: yes
+  tags: postinstall
+  become_method: sudo
+  ignore_errors: yes
+
+# Añado un archivo para el logrotate -- FIX ME -- no se si está funcionando, hay que revisarlo
+- name: Configuration of logrotate
+  template: src=templates/omnileads dest=/etc/logrotate.d/omnileads owner=root group=root mode=644
