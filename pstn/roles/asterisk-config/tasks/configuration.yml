@@ -19,10 +19,11 @@
 
 # configuracion de asterisk pstn
 - name: cp extensions.conf
-  template: src=templates/extensions.conf dest=/etc/asterisk/ owner=root group=root mode=650
+  template: src=templates/extensions.conf dest=/etc/asterisk/ owner=asterisk group=asterisk mode=650
   tags: postinstall
 
 - name: cp sip.conf
-  template: src=templates/extensions.conf dest=/etc/asterisk/ owner=root group=root mode=650
+  template: src=templates/sip.conf dest=/etc/asterisk/ owner=asterisk group=asterisk mode=650
   tags: postinstall
+
 ...

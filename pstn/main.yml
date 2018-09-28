@@ -4,6 +4,6 @@
   sudo: yes
 
   roles:
-  - asterisk-install
+#  - asterisk-install
   - asterisk-config
 ...
